@@ -15,11 +15,13 @@ try {
 
 if (isset($_POST['save'])) {
     $query = "INSERT INTO `tasks` (description, date_added) VALUES (?, NOW())";
-    $description = (string)(isset($_POST['description']) ? $_POST['description'] : "");
+    $description = (string)($_POST['description']);
     $description = trim($description);
 
-    $statement = $pdo->prepare($query);
-    $statement->execute([$description]);
+    if ($description !== '') {
+        $statement = $pdo->prepare($query);
+        $statement->execute([$description]);
+    }
 }
 
 if (isset($_GET['done'])) {
@@ -41,13 +43,16 @@ if (isset($_GET['delete'])) {
 }
 
 if (isset($_POST['save1'])) {
-  $query = "UPDATE tasks SET description = ? WHERE id = ?";
-  $description = (string)!empty($_POST['description']) ? $_POST['description'] : 0;
-  $id = (int)($_GET['edit']);
+    $query = "UPDATE tasks SET description = ? WHERE id = ?";
+    $description = (string)($_POST['description']);
+    $description = trim($description);
+    $id = (int)($_GET['edit']);
 
-  $statement = $pdo->prepare($query);
-  $statement->execute([$description, $id]);
-  header("Location: index.php");
+    if ($description !== '') {
+        $statement = $pdo->prepare($query);
+        $statement->execute([$description, $id]);
+    }
+    header("Location: index.php");
 }
 
 $sql = "SELECT * FROM tasks";
